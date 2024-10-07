@@ -7,8 +7,10 @@ app = Flask("Emotion Detector")
 def emo_detector():
     # Retrieve the text to analyze from the request arguments
     text_to_detect = request.args.get('textToAnalyze')
+
     # Pass the text to the emotion detector function and store the response
     response = emotion_detector(text_to_detect)
+
     # Extract the score from the response
     anger_score = response['anger']
     disgust_score = response['disgust']
@@ -16,8 +18,13 @@ def emo_detector():
     joy_score = response['joy']
     sadness_score = response['sadness']
     dominant_emotion = response['dominant_emotion']
-    # Return a formatted string with the emotion and score
-    return f"For the given statement, the system response is 'anger': {anger_score}, 'disgust': {disgust_score}, 'fear': {fear_score}, 'joy': {joy_score} and 'sadness': {sadness_score}. The dominant emotion is {dominant_emotion}."
+
+    # Check if the label is None, indicating an error or invalid input
+    if dominant_emotion is None:
+        return "Invalid text! Please try again!"
+    else:
+        # Return a formatted string with the emotion and score
+        return f"For the given statement, the system response is 'anger': {anger_score}, 'disgust': {disgust_score}, 'fear': {fear_score}, 'joy': {joy_score} and 'sadness': {sadness_score}. The dominant emotion is {dominant_emotion}."
 
 @app.route("/")
 def render_index_page():
